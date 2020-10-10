@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:DataFoundation="http://www.sap.com/ndb/BiModelDataFoundation.ecore" xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" id="mytravel.db::cv_myrooms" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="My Travel Rooms"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="mytravel.db::v_city">
+    <resourceUri>mytravel.db::v_city</resourceUri>
+  </DataSource>
+  <DataSource id="mytravel.db::v_hotel">
+    <resourceUri>mytravel.db::v_hotel</resourceUri>
+  </DataSource>
+  <DataSource id="mytravel.db::ROOM">
+    <resourceUri>mytravel.db::ROOM</resourceUri>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_1" cardinality="CN_N" joinType="inner" multiJoinNode="Join_1" multiJoinCentralTable="mytravel.db::ROOM" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="state"/>
+      <viewAttribute id="city"/>
+      <viewAttribute id="hotel"/>
+      <viewAttribute id="hno"/>
+      <viewAttribute hidden="true" id="JOIN$zip$zip"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="mytravel.db::v_city">
+      <mapping xsi:type="Calculation:AttributeMapping" target="state" source="state"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="city" source="name"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$zip$zip" source="zip"/>
+    </input>
+    <input node="mytravel.db::v_hotel">
+      <mapping xsi:type="Calculation:AttributeMapping" target="hotel" source="name"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="hno" source="hno"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$zip$zip" source="zip"/>
+    </input>
+    <joinAttribute name="JOIN$zip$zip"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_2" cardinality="CN_N" joinType="inner" multiJoinNode="Join_1" multiJoinCentralTable="mytravel.db::ROOM" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="type"/>
+      <viewAttribute id="state"/>
+      <viewAttribute id="city"/>
+      <viewAttribute id="hotel"/>
+      <viewAttribute id="free" aggregationType="sum"/>
+      <viewAttribute hidden="true" id="JOIN$HNO$hno"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="mytravel.db::ROOM">
+      <mapping xsi:type="Calculation:AttributeMapping" target="type" source="TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="free" source="FREE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$HNO$hno" source="HNO"/>
+    </input>
+    <input node="Join_1_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="state" source="state"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="city" source="city"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="hotel" source="hotel"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$HNO$hno" source="hno"/>
+    </input>
+    <joinAttribute name="JOIN$HNO$hno"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Join_1_2">
+  <attributes>
+    <attribute id="type" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="type"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="type"/>
+    </attribute>
+    <attribute id="state" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="state"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="state"/>
+    </attribute>
+    <attribute id="city" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="name"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="city"/>
+    </attribute>
+    <attribute id="hotel" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="name"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="hotel"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="free" order="5" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="free"/>
+      <measureMapping columnObjectName="Join_1_2" columnName="free"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions>
+    <localDimension id="Geo">
+      <attributeRef xsi:type="DataFoundation:Attribute">state</attributeRef>
+      <attributeRef xsi:type="DataFoundation:Attribute">city</attributeRef>
+      <attributeRef xsi:type="DataFoundation:Attribute">hotel</attributeRef>
+      <hierarchies>
+        <hierarchy xsi:type="Dimension:LeveledHierarchy" id="Geo" aggregateAllNodes="false" orphanedNodesHandling="ROOT_NODES" rootNodeVisibility="ADD_ROOT_NODE" withRootNode="true" nodeStyle="NAME_PATH_ENFORCED" cacheEnabled="true" cycleHandling="BREAKUP" emptyValueIsNull="true">
+          <descriptions defaultDescription="Geo"/>
+          <unassignedMemberProperties mode="FALSE"/>
+          <levels>
+            <level levelAttribute="state" levelType="MDLEVEL_TYPE_REGULAR" order="1" orderAttribute="state" sortDirection="ASC"/>
+            <level levelAttribute="city" levelType="MDLEVEL_TYPE_REGULAR" order="2" orderAttribute="city" sortDirection="ASC"/>
+            <level levelAttribute="hotel" levelType="MDLEVEL_TYPE_REGULAR" order="3" orderAttribute="hotel" sortDirection="ASC"/>
+          </levels>
+        </hierarchy>
+      </hierarchies>
+    </localDimension>
+  </localDimensions>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="100" y="178"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="mytravel.db::ROOM" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="176.681640625"/>
+    </shape>
+    <shape modelObjectName="mytravel.db::v_city" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="351" y="215"/>
+      <rectangleSize width="173.376953125"/>
+    </shape>
+    <shape modelObjectName="mytravel.db::v_hotel" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="620" y="30"/>
+      <rectangleSize width="181.36328125"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

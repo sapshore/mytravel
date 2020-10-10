@@ -1,0 +1,20 @@
+{
+    "mytravel.db::ROOM": {
+        "target": {
+            "object": "ROOM",
+            "schema": "TRAVEL"
+        }
+    },
+    "mytravel.db::v_city": {
+        "target": {
+            "object": "v_city",
+            "schema": "TRAVEL"
+        }
+    },
+    "mytravel.db::v_hotel": {
+        "target": {
+            "object": "v_hotel",
+            "schema": "TRAVEL"
+        }
+    }
+}
